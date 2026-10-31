@@ -7,57 +7,44 @@
 <title>我的小日记 🌸</title>
 <style>
   :root{
-    --sky1:#fde9f0;
-    --sky2:#f8dbe7;
-    --sky3:#ece2f6;
-    --ink:#4a3346;
-    --ink-soft:#7d6178;
-    --paper:#fffaf6;
-    --sakura:#f4a7c0;
-    --sakura-deep:#d9668e;
-    --branch:#6b4a3f;
+    --sky1:#fde9f0; --sky2:#f8dbe7; --sky3:#ece2f6;
+    --ink:#4a3346; --ink-soft:#7d6178;
+    --paper:#fffaf5; --rule:rgba(214,150,175,0.22);
+    --sakura:#f4a7c0; --sakura-deep:#d9668e;
+    --L:1.85em;
   }
   *{ box-sizing:border-box; margin:0; padding:0; }
-  html{ -webkit-text-size-adjust:100%; }
+  html,body{ height:100%; }
   body{
-    min-height:100vh;
     background:
       radial-gradient(ellipse 80% 50% at 50% 0%, rgba(255,255,255,0.7), transparent 70%),
       radial-gradient(ellipse 60% 40% at 85% 85%, rgba(214,190,240,0.45), transparent 70%),
       linear-gradient(180deg, var(--sky1) 0%, var(--sky2) 50%, var(--sky3) 100%);
-    background-attachment:fixed;
     color:var(--ink);
     font-family:'Kaiti SC','STKaiti','KaiTi','Noto Serif CJK SC','Noto Serif SC','Songti SC','SimSun',serif;
     -webkit-font-smoothing:antialiased;
-    overflow-x:hidden;
+    overflow:hidden;
     -webkit-tap-highlight-color:transparent;
+    user-select:none; -webkit-user-select:none;
   }
-  body.locked{ overflow:hidden; height:100vh; }
 
   .branch{ position:fixed; z-index:1; pointer-events:none; }
   .branch.left{ top:-10px; left:-14px; width:min(58vw,360px); }
-  .branch.right{ top:18vh; right:-16px; width:min(42vw,250px); transform:scaleX(-1); opacity:0.9; }
+  .branch.right{ top:14vh; right:-16px; width:min(42vw,250px); transform:scaleX(-1); opacity:0.9; }
   .branch svg{ width:100%; height:auto; display:block; overflow:visible; }
   .sway{ transform-origin:0 0; animation:sway 7s ease-in-out infinite alternate; }
   @keyframes sway{ from{ transform:rotate(-0.8deg); } to{ transform:rotate(1.2deg); } }
 
   #petals{ position:fixed; inset:0; width:100%; height:100%; z-index:2; pointer-events:none; }
-  #flies{ position:fixed; inset:0; width:100%; height:100%; z-index:6; pointer-events:none; }
-
-  /* barra de progreso */
-  #progress{
-    position:fixed; top:0; left:0; height:3px; width:0; z-index:7;
-    background:linear-gradient(90deg, #f7bfd1, var(--sakura-deep));
-    box-shadow:0 0 8px rgba(217,102,142,0.5);
-    transition:width 0.2s linear;
-  }
+  #flies{ position:fixed; inset:0; width:100%; height:100%; z-index:3; pointer-events:none; }
+  #petalsTop{ position:fixed; inset:0; width:100%; height:100%; z-index:9; pointer-events:none; }
 
   /* ---------- portada ---------- */
   #coverWrap{
-    position:fixed; inset:0; z-index:10;
+    position:fixed; inset:0; z-index:20;
     display:flex; flex-direction:column; align-items:center; justify-content:center;
     perspective:1600px;
-    transition:opacity 1.2s ease 1s;
+    transition:opacity 1s ease 0.9s;
   }
   #coverWrap.gone{ opacity:0; pointer-events:none; }
   .cover{
@@ -70,17 +57,15 @@
       linear-gradient(140deg, #f6b9cc, #e88aa9 60%, #d9708f);
     box-shadow:0 30px 60px rgba(150,60,100,0.35), inset 8px 0 0 rgba(0,0,0,0.08), inset 0 0 40px rgba(120,30,70,0.18);
     transform-origin:left center;
-    transition:transform 1.6s cubic-bezier(.6,.05,.25,1);
+    transition:transform 1.5s cubic-bezier(.6,.05,.25,1);
     display:flex; flex-direction:column; align-items:center; justify-content:center;
-    text-align:center; color:#fff;
-    -webkit-tap-highlight-color:transparent;
+    text-align:center;
   }
   .cover.open{ transform:rotateY(-165deg); }
   .cover .ribbon{
-    position:absolute; top:-6px; right:22%; width:18px; height:calc(100% + 34px);
+    position:absolute; top:-6px; right:9%; width:18px; height:calc(100% + 34px);
     background:linear-gradient(90deg,#c84f78,#e47b9f,#c84f78);
     clip-path:polygon(0 0,100% 0,100% 100%,50% 94%,0 100%);
-    box-shadow:0 2px 6px rgba(0,0,0,0.15);
   }
   .cover .label{
     position:relative; margin-right:12%;
@@ -88,103 +73,220 @@
     border-radius:12px; padding:1.3rem 1.4rem 1.1rem;
     box-shadow:0 6px 18px rgba(120,40,80,0.18);
   }
-  .cover .label h1{ font-weight:400; font-size:clamp(1.6rem,7vw,2rem); letter-spacing:0.25em; padding-left:0.25em; }
+  .cover .label{ display:flex; flex-direction:column; align-items:center; padding:0; margin-right:6%; background:none !important; box-shadow:none !important; border-radius:0; }
+  .cover .label .rose{ width:96px; height:auto; display:block; filter:drop-shadow(0 6px 10px rgba(110,20,55,0.35)); }
+  .cover .label h1{ margin-top:0.7rem; font-family:Georgia,'Times New Roman',serif; font-weight:400; font-size:clamp(1.7rem,7.5vw,2.2rem); letter-spacing:0.32em; padding-left:0.32em; color:#fff7f3; text-shadow:0 2px 10px rgba(120,30,70,0.45); }
   .cover .label p{ margin-top:0.5rem; font-size:0.9rem; letter-spacing:0.3em; color:var(--sakura-deep); }
-  .cover .flower-badge{ position:absolute; width:74px; left:14%; bottom:12%; opacity:0.95; }
-  .tapHint{
-    margin-top:2.6rem; color:var(--ink-soft); font-size:0.95rem; letter-spacing:0.25em;
-    animation:breathe 2.6s ease-in-out infinite;
+  .cover .flower-badge{ position:absolute; width:74px; left:14%; bottom:12%; }
+  .coverDays{
+    margin-top:2rem; font-size:1rem; letter-spacing:0.12em; color:var(--ink);
+    background:rgba(255,255,255,0.6); padding:0.5em 1.3em; border-radius:999px;
+    box-shadow:0 4px 14px rgba(200,120,160,0.15);
   }
+  .tapHint{ margin-top:1.1rem; color:var(--ink-soft); font-size:0.95rem; letter-spacing:0.25em; animation:breathe 2.6s ease-in-out infinite; }
   @keyframes breathe{ 0%,100%{ opacity:0.35; } 50%{ opacity:1; } }
 
-  /* ---------- diario ---------- */
-  .book{
-    position:relative; z-index:4;
-    max-width:36rem; margin:0 auto;
-    padding:max(14vh,5.5rem) 16px max(10vh,4rem);
-    opacity:0; transform:translateY(24px);
-    transition:opacity 1.6s ease, transform 1.6s ease;
+  /* ---------- el libro ---------- */
+  #stage{
+    position:fixed; inset:0; z-index:5;
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    padding:max(12px, env(safe-area-inset-top)) 12px max(12px, env(safe-area-inset-bottom));
+    opacity:0; transition:opacity 1.2s ease;
+    pointer-events:none;
   }
-  .book.show{ opacity:1; transform:none; }
-  .chapter{
+  #stage.show{ opacity:1; pointer-events:auto; }
+  .days{
+    font-size:0.88rem; letter-spacing:0.1em; color:var(--ink);
+    background:rgba(255,255,255,0.65); padding:0.3em 1.1em; border-radius:999px;
+    margin-bottom:8px; box-shadow:0 4px 12px rgba(200,120,160,0.15);
+    white-space:nowrap;
+  }
+  .days b{ color:var(--sakura-deep); font-weight:600; font-size:1.15em; }
+  #book{
     position:relative;
-    background:
-      radial-gradient(circle at 100% 0%, rgba(248,200,216,0.25), transparent 40%),
-      linear-gradient(180deg, #fffdfb, var(--paper));
-    border-radius:20px;
-    padding:2.6rem 1.5rem 1.8rem;
-    margin-bottom:2.4rem;
-    box-shadow:0 18px 40px rgba(170,90,130,0.16), 0 0 0 1px rgba(232,180,200,0.35);
-    opacity:0; transform:translateY(16px);
-    transition:opacity 1.3s ease, transform 1.3s ease;
+    width:min(94vw, 560px);
+    height:min(calc(100vh - 112px), 860px);
+    perspective:1400px; perspective-origin:30% 50%;
   }
-  .chapter.in{ opacity:1; transform:none; }
-  .tape{
-    position:absolute; top:-14px; left:50%; transform:translateX(-50%) rotate(-2deg);
+  .spine{
+    position:absolute; left:-6px; top:6px; bottom:6px; width:14px; border-radius:6px 0 0 6px;
+    background:linear-gradient(90deg,#c95f83,#e996b1);
+    box-shadow:-3px 4px 10px rgba(150,60,100,0.25);
+  }
+  .stack{ /* hojas de abajo, para que se vea grueso */
+    position:absolute; inset:0; border-radius:4px 16px 16px 4px;
+    background:#f6ece6;
+    box-shadow:3px 3px 0 #efe2da, 6px 6px 0 #e9dad1, 0 24px 50px rgba(150,70,110,0.25);
+  }
+  .page{
+    position:absolute; inset:0;
+    border-radius:4px 16px 16px 4px;
+    background-color:var(--paper);
+    background-image:
+      linear-gradient(90deg, rgba(0,0,0,0.06), transparent 18px),
+      radial-gradient(circle at 100% 0%, rgba(248,200,216,0.28), transparent 38%);
+    padding:30px 18px 38px 24px;
+    transform-origin:left center;
+    backface-visibility:hidden; -webkit-backface-visibility:hidden;
+    display:none;
+    overflow:hidden;
+    font-size:clamp(15.5px, 4.15vw, 18px);
+  }
+  .page.cur, .page.under, .page.measure{ display:block; }
+  .page.cur{ z-index:3; }
+  .page.under{ z-index:2; }
+  .page.measure{ visibility:hidden; z-index:0; }
+  .page .content{
+    position:relative; height:100%; overflow:hidden;
+    background-image:linear-gradient(to bottom, transparent calc(var(--L) - 1px), var(--rule) calc(var(--L) - 1px), var(--rule) var(--L));
+    background-size:100% var(--L);
+  }
+  .page p{
+    line-height:var(--L); letter-spacing:0.03em; color:var(--ink);
+    text-indent:2em; margin-bottom:0;
+  }
+  .page p.cont{ text-indent:0; }
+  .page p.em{ margin:var(--L) 0; text-indent:0; text-align:center; color:var(--sakura-deep); font-size:1.2em; letter-spacing:0.15em; }
+  .page p:last-child{ margin-bottom:0; }
+  .page .tape{
+    display:block; width:max-content; max-width:100%;
+    margin:0 auto var(--L); line-height:var(--L);
     background:repeating-linear-gradient(90deg, rgba(247,190,209,0.92) 0 9px, rgba(251,214,225,0.92) 9px 18px);
-    color:#7a3a57; padding:0.35em 1.2em; font-size:1rem; letter-spacing:0.12em;
-    white-space:nowrap; border-radius:3px;
+    color:#7a3a57; padding:0 1.1em; letter-spacing:0.12em;
+    transform:rotate(-1.5deg); border-radius:3px;
     box-shadow:0 2px 6px rgba(160,80,110,0.15);
   }
-  .chapter p{
-    font-size:clamp(1.06rem,4.3vw,1.2rem);
-    line-height:2.05; letter-spacing:0.04em; color:var(--ink);
-    margin-bottom:1.3rem; text-indent:2em;
+  .page .num{
+    position:absolute; left:0; right:0; bottom:10px; text-align:center;
+    font-size:13px; letter-spacing:0.2em; color:#b7949f;
   }
-  .chapter p:last-child{ margin-bottom:0; }
-  .chapter .corner{ position:absolute; width:46px; right:12px; bottom:10px; opacity:0.55; }
-  .divider{ text-align:center; margin:-0.6rem 0 1.8rem; }
-  .divider svg{ width:34px; height:34px; opacity:0.7; }
+  .page .corner{ position:absolute; width:34px; right:10px; bottom:6px; opacity:0.5; }
 
-  .ending{
-    text-align:center; padding:2.4rem 1rem 1rem;
-    opacity:0; transform:translateY(16px);
-    transition:opacity 1.6s ease, transform 1.6s ease;
+  /* página de título */
+  .titlePage{ display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; height:100%; gap:1.2em; }
+  .titlePage h2{ font-weight:400; font-size:2em; letter-spacing:0.25em; padding-left:0.25em; }
+  .titlePage .sub{ color:var(--sakura-deep); letter-spacing:0.3em; }
+  .titlePage .big{ font-size:3.4em; color:var(--sakura-deep); line-height:1.1; }
+  .titlePage .small{ color:var(--ink-soft); font-size:0.9em; letter-spacing:0.1em; }
+  .titlePage svg{ width:70px; height:70px; }
+  .titlePage .swipe{ margin-top:1em; font-size:0.85em; color:#b7949f; letter-spacing:0.2em; }
+
+  /* índice */
+  .toc{ background:var(--paper); border-radius:6px; }
+  .toc h3{ text-align:center; font-weight:400; letter-spacing:0.4em; padding-left:0.4em; line-height:1.6em; margin-bottom:0.2em; color:var(--sakura-deep); font-size:1.15em; }
+  .toc a{
+    display:flex; align-items:center; gap:0.4em; line-height:1.6em; font-size:0.9em;
+    color:var(--ink); text-decoration:none; cursor:pointer;
+    border-radius:8px; padding:0 0.3em; margin:0 -0.3em;
+    transition:background 0.2s ease;
   }
-  .ending.in{ opacity:1; transform:none; }
-  .ending h2{
-    font-weight:400; font-size:clamp(2.4rem,11vw,3.4rem); letter-spacing:0.2em; padding-left:0.2em;
-    color:var(--sakura-deep);
-    text-shadow:0 0 30px rgba(255,255,255,0.9), 0 4px 18px rgba(217,102,142,0.35);
+  .toc a:active, .toc a:hover{ background:rgba(244,167,192,0.18); }
+  .toc a .n{ color:var(--sakura-deep); }
+  .toc a .go{ color:var(--sakura-deep); font-size:0.85em; opacity:0.8; }
+  .toc .tip{ text-align:center; font-size:0.8em; color:#b7949f; letter-spacing:0.15em; line-height:1.6em; margin-bottom:0.5em; }
+  .toc .more{ text-align:right; font-size:0.85em; color:var(--sakura-deep); line-height:1.8em; margin-top:0.3em; letter-spacing:0.1em; }
+  .toc a .dots{ flex:1; border-bottom:1px dotted #d9b3c2; transform:translateY(-0.35em); }
+  .toc a .new{ font-size:0.7em; color:#fff; background:var(--sakura-deep); border-radius:4px; padding:0 0.4em; line-height:1.6; }
+
+  /* final */
+  .endPage{ display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; height:100%; }
+  .endPage > svg{ width:76px; height:76px; margin-bottom:0.6em; }
+  .endPage h2{ font-weight:400; font-size:3em; letter-spacing:0.2em; padding-left:0.2em; color:var(--sakura-deep); text-shadow:0 4px 18px rgba(217,102,142,0.3); }
+  .endPage .sign{ margin-top:0.8em; font-size:1.3em; color:var(--ink-soft); }
+  .endPage .again{ margin-top:2.2em; font-size:0.85em; color:var(--sakura-deep); border:1px solid rgba(217,102,142,0.4); border-radius:999px; padding:0.4em 1.3em; background:transparent; font-family:inherit; cursor:pointer; }
+
+  /* animación de pasar hoja */
+  .page.fwd{ animation:turnFwd 0.75s cubic-bezier(.45,.05,.4,1) forwards; z-index:4; }
+  .page.back{ animation:turnBack 0.75s cubic-bezier(.45,.05,.4,1) forwards; z-index:4; }
+  @keyframes turnFwd{
+    0%{ transform:rotateY(0deg); filter:brightness(1); }
+    60%{ filter:brightness(0.93); }
+    100%{ transform:rotateY(92deg); filter:brightness(0.85); opacity:0.6; }
   }
-  .ending .sign{ margin-top:1rem; font-size:1.4rem; color:var(--ink-soft); letter-spacing:0.08em; }
-  .ending .hint{ margin-top:2.4rem; font-size:0.85rem; letter-spacing:0.2em; color:rgba(125,97,120,0.6); }
+  @keyframes turnBack{
+    0%{ transform:rotateY(92deg); filter:brightness(0.85); opacity:0.6; }
+    100%{ transform:rotateY(0deg); filter:brightness(1); opacity:1; }
+  }
+
+  .nav{
+    display:flex; align-items:center; gap:14px; margin-top:10px;
+  }
+  .nav button.tocBtn{
+    width:auto; height:36px; border-radius:999px; padding:0 1em; font-size:0.9rem; letter-spacing:0.15em;
+  }
+  .nav button{
+    width:40px; height:40px; border-radius:50%;
+    border:1px solid rgba(217,102,142,0.35); background:rgba(255,255,255,0.7);
+    color:var(--sakura-deep); font-size:20px; cursor:pointer; font-family:inherit;
+    box-shadow:0 4px 12px rgba(200,120,160,0.15);
+  }
+  .nav button:disabled{ opacity:0.35; cursor:default; }
+  .nav .pg{ min-width:80px; text-align:center; font-size:0.95rem; color:var(--ink-soft); letter-spacing:0.1em; }
 
   @media (prefers-reduced-motion: reduce){
     .sway, .tapHint{ animation:none; }
-    .cover, .book, .chapter, .ending{ transition:none !important; }
-    #petals, #flies{ display:none; }
+    .cover{ transition:none; }
+    .page.fwd, .page.back{ animation-duration:0.01s; }
+    #petals, #flies, #petalsTop{ display:none; }
   }
 </style>
 </head>
-<body class="locked">
+<body>
 
 <div class="branch left" aria-hidden="true"><svg id="branchL" viewBox="0 0 330 270"></svg></div>
 <div class="branch right" aria-hidden="true"><svg id="branchR" viewBox="0 0 330 270"></svg></div>
 <canvas id="petals"></canvas>
 <canvas id="flies"></canvas>
-<div id="progress"></div>
 
 <div id="coverWrap">
   <div class="cover" id="cover" role="button" aria-label="打开日记">
     <div class="ribbon"></div>
-    <svg class="flower-badge" id="badge" viewBox="-40 -40 80 80" aria-hidden="true"></svg>
     <div class="label">
-      <h1>我的小日记</h1>
-      <p>写给你</p>
+      <svg class="rose" viewBox="0 0 120 200" aria-hidden="true">
+        <path d="M60 96 C 57 125, 63 160, 60 196" stroke="#3f7a52" stroke-width="4" fill="none" stroke-linecap="round"/>
+        <path d="M60 140 C 44 128, 30 132, 24 142 C 36 150, 50 150, 60 140 Z" fill="#5c9a6a"/>
+        <path d="M60 140 C 48 138, 36 140, 24 142" stroke="#3f7a52" stroke-width="1" fill="none"/>
+        <path d="M61 166 C 76 152, 92 154, 98 164 C 86 174, 72 174, 61 166 Z" fill="#5c9a6a"/>
+        <path d="M61 166 C 74 163, 86 163, 98 164" stroke="#3f7a52" stroke-width="1" fill="none"/>
+        <path d="M60 94 L 48 104 L 58 100 L 60 110 L 63 100 L 73 104 Z" fill="#4f8a5e"/>
+        <path d="M30 66 C 24 38, 48 20, 61 29 C 76 19, 99 37, 91 66 C 87 88, 72 98, 60 98 C 47 98, 33 89, 30 66 Z" fill="#b92d55"/>
+        <path d="M37 60 C 35 42, 55 31, 64 40 C 75 33, 89 46, 83 64 C 79 79, 67 87, 60 87 C 50 87, 39 77, 37 60 Z" fill="#d9466f"/>
+        <path d="M45 56 C 45 44, 59 39, 64 47 C 71 43, 79 52, 75 62 C 71 71, 63 75, 58 73 C 50 71, 45 64, 45 56 Z" fill="#ef6b92"/>
+        <path d="M55 56 C 55 49, 67 49, 67 56 C 67 63, 58 65, 56 60" stroke="#a3244a" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+        <path d="M37 60 C 43 71, 51 76, 60 76 C 69 76, 78 70, 83 64" stroke="#a3244a" stroke-width="1.4" fill="none" opacity="0.55"/>
+        <path d="M30 66 C 36 82, 48 90, 60 90 C 73 90, 85 82, 91 66" stroke="#8f1f42" stroke-width="1.4" fill="none" opacity="0.45"/>
+        <ellipse cx="50" cy="48" rx="5" ry="2.5" fill="#ffffff" opacity="0.35" transform="rotate(-30 50 48)"/>
+      </svg>
+      <h1>SOPHIA</h1>
     </div>
   </div>
-  <div class="tapHint">轻触，翻开日记</div>
+  <div class="coverDays" id="coverDays"></div>
+  <div class="tapHint" id="tapHint">轻触，翻开日记</div>
 </div>
 
-<main class="book" id="book"></main>
+<div id="stage">
+  <div class="days" id="days"></div>
+  <div id="book">
+    <div class="stack"></div>
+    <div class="spine"></div>
+  </div>
+  <div class="nav">
+    <button id="prevBtn" aria-label="上一页">‹</button>
+    <div class="pg" id="pg"></div>
+    <button id="nextBtn" aria-label="下一页">›</button>
+    <button id="tocBtn" class="tocBtn" aria-label="目录">目录</button>
+  </div>
+</div>
+
+<canvas id="petalsTop"></canvas>
 
 <script>
 (function(){
   'use strict';
 
   /* =====================================================================
-     EL DIARIO (en chino). Cada capítulo: título + párrafos.
+     EL DIARIO (en chino). Para añadir una entrada nueva: agregar un
+     capítulo al final con  nuevo:true  (sale con la etiqueta 新 en el índice).
      ===================================================================== */
   var CHAPTERS = [
     { t:'写在前面', p:[
@@ -251,12 +353,51 @@
       '你很聪明，在课堂上也很优秀。其实在数学、化学、生物和物理这些基础科目上，你比我聪明多了，我非常确定；我其实只擅长科技。我很喜欢和你在一起，和你分享我的一天，你也是我生命的一部分，你不是一个过客。我想一直留住你，可是未来是不确定的。说到底，爱是一场赌注：我们可能会有一个美好的结局，也可能结局没那么美好。可最后，能书写我们梦想的人，只有我们自己，只有我们。相信我，你是一个非常勇敢的姑娘。我相信有一天你回头看的时候，也许我已经不在了，但你会发现自己有多美、多勇敢、多了不起。',
       '有时候你说你不会爱人，可其实你懂得爱。你对我说过很美的话，夸过我；你给了我温柔，给了我善良，给了我支持，给了我牵挂，也把你的一部分给了我，我会用整颗心去珍藏。这一切，就是你：一个很漂亮、很有魅力的女学生；一个好胜心很强、很聪明，也很调皮的女孩，哈哈；有趣、充满活力、充满梦想、性格很强；一个很爱骂人的女孩，但心里也有善良和爱；一个充满害怕，也充满梦想的女孩；一个脆弱，也很坚强的女孩；一个会怀疑自己，却知道自己想要什么、每天都为了目标努力学习的女孩；一个说自己不够聪明，可在我眼里却非常聪明的女孩；一个温柔、美丽、可爱、善良的女孩；有时生气，有时难过，有时开心；心里装满了梦想、生命、目标和憧憬；一个有着美丽的笑容、美丽的眼睛、美丽的眼睑和美丽身姿的女孩。也许有时候你会忘记这些，但请不要忘记：也许你不是一直都这样觉得，但你现在是，将来也会是，一个了不起的女人。',
       '我不知道未来会怎样。其实我好想你。今天你情绪崩溃了，你总是想把我推开，但我会一直留在你身边，直到你厌倦我为止，因为我真的爱你。我不知道这段感情会带我们去哪里，但相信我，等那一天到来，我一定会去找你。请好好吃饭，照顾好自己。你还年轻，控制不住自己的情绪和想法是很正常的，但我相信你会继续成长，继续学习，会改变，也会做成很多事。',
-      '有些事情你也许会失败、会犯错；有时候你也许会感到害怕、恐惧、焦虑或不安，但我想让你知道，我的每一部分都会尽全力，轻轻推你一把，提醒你你有多了不起。我想你。其实你是我生命中的一部分，很美的一部分，所以请不要忘记这一切。这封信并不完美，离完美还差得很远，但要把一件事做好，本来就不需要完美。说了这么多，等你读到这里的时候，我想给你一个拥抱，在你额头上轻轻一吻，还有，最重要的是——'
+      '有些事情你也许会失败、会犯错；有时候你也许会感到害怕、恐惧、焦虑或不安，但我想让你知道，我的每一部分都会尽全力，轻轻推你一把，提醒你你有多了不起。我想你。其实你是我生命中的一部分，很美的一部分，所以请不要忘记这一切。这封信并不完美，离完美还差得很远，但要把一件事做好，本来就不需要完美。说了这么多，等你读到这里的时候，我想给你一个拥抱，在你额头上轻轻一吻，还有，最重要的是——',
+      '^我爱你。—— Carlos'
+    ]}
+    ,
+    { t:'10月29日', nuevo:true, p:[
+      '今天我又来写了。我已经把日记交给你了。其实一开始我不知道你会有什么反应，毕竟我不是一个很会写东西的人。现在，经历了那件事之后，你平静多了。我感觉你更安稳、更踏实了。我想，我们还需要一起面对这些有点复杂的事情，尤其是当你控制不住自己、想把我推开的时候。一开始我很害怕😥，特别是当你怀疑自己到底爱不爱我的时候。可是最后我明白了：那时候你只是情绪失控了——你的生气、你的疲惫……你太累了，睡得太少，我想这些就是导火索。即便如此，我还是很担心。不过最后，我很高兴你回来了，也愿意和我好好聊。你真的是一个很坚强的女孩。',
+      '有时候我会想，这本日记和这些信，能不能帮你平静下来。其实，我写给你的原因很简单：能让你笑一下，或者提醒你你有多了不起、多特别，这一切就都值得了☺️。说到底，我做这些，就是想支持你，给你一个可以回来的地方——当你觉得自己撑不住的时候，或者当你气到爆炸的时候。不要害怕，回到我身边，我会帮你分担你小小肩膀上的重量。我爱你，我漂亮的小姑娘。'
+    ]},
+    { t:'10月30日', nuevo:true, p:[
+      '今天是星期五。这个时候你应该睡得像一只贪睡的水豚吧，希望你今天能睡够。今天你很忙，其实今天我比平时更想你。不过，谢谢你跟我解释为什么没怎么给我发消息。但我也想让你知道，你不需要道歉。我很清楚你在学习、在睡觉，或者在忙着写作业，对这些我没有任何意见，也不会抱怨。只要记得有空就休息，别给自己太大压力；也记得我每天都在为你加油。如果你需要什么，尽管跟我说。',
+      '不过，我希望你到家的时候能跟我说一声，这样我就不会像今晚这样担心了。没关系，毕竟你还不习惯，没事的。所以你知道的，我不会生气……除非你不理我🥺（开玩笑的）。还有，告诉你的朋友：等我到了中国，我会牵着你的手，给你成千上万个拥抱。',
+      '现在我要去给你订你说想吃的那个蛋糕，等你醒了，我再给你点奶茶。一想到上次我们的外卖被人偷了，我还是忍不住笑，哈哈哈。好吧，希望拿走它的那个人，也许真的很需要，至少吃上了东西。总之没关系，我再给你送一次就好。只是让我担心的是，那天你没有好好吃饭……其实这件事对我来说很重要。我会负责让你吃得饱饱的，把你宠得好好的。我觉得我有点太宠你了，不过我一点也不在乎🤷——你是我的女朋友，当然永远都是被宠着的那个女孩。'
+    ]},
+    { t:'10月31日', nuevo:true, p:[
+      '今天是这个月的最后一天。这是很长的一个月：我们有过开心、好玩的时光，也有过一些难过或者不好的时候，但这都是感情的一部分。重要的是，我们还在一起，享受着、生活在当下。今天我订的蛋糕到了，希望你喜欢，还有那杯奶茶。希望一切都送到了，也希望我每次在订单里写的小纸条都有好好送到。',
+      '其实这没什么，但我觉得一句温暖的话、一句早安，或者一点点关心，也许能帮你开始新的一天，给你一点力量。就连跟你说早安、晚安，也都是很简单的小事，但我想让你知道：我一直在你身边，帮你，给你一点小小的鼓励，让你的一天开心一点。',
+      '今天你也拿到新手机了，我猜你今天一定超级开心吧。我很为你高兴，希望你好好享受。要好好爱护它，还要给我拍好看的照片😳，哈哈，开玩笑的。今天是很平静的一天。我很高兴你心情不错，好好吃了饭，也好好休息了，这让我很开心。至于我的一天，也很平静：我完成了我的期末项目，现在终于可以放松一点了。我想我可以多玩一会儿游戏了，哈哈哈。'
+    ]},
+    { t:'十月的最后', nuevo:true, p:[
+      '好啦，十月结束了。你做的那个视频真的很好看，现在我好喜欢你的小脸蛋，哈哈哈。又过了一个月，今年也快结束了，我在想我们会怎样度过这一年的最后。在你身边快两个月了，认识你也已经两个多月了。我很高兴遇见你。',
+      '作为情侣，我们学到了很多，你也是，不要怀疑。最重要的是，我觉得我们有过很多美好的时光，也有一些不那么美好的时候，但这都是感情的一部分。不要怀疑，我们是一个团队。我感谢生命让我遇见你；不管发生什么，我真的很开心有你在我身边。我知道你有你的怀疑、你的害怕、你的不安，可即便如此，我还是选择你，只选择你，唯一的你。',
+      '我还记得你问过我的那个问题：“如果一年后我们分手了，而我从来没有在你身上花过钱，你会怎么做？”我的回答还是一样：我不会生气。如果你害怕我会跟你算账，其实我不是那样的男人。要记得，每一份礼物、每一次下单，都不是为了炫耀，也不是为了讨好你；每一份礼物，都只是为了让你笑一下，让你开心，提醒你：有一部分的我，时时刻刻都在支持你——你睡觉的时候、出门的时候、在学校的时候……任何时候，都有我的一点点在陪着你，给你力量。',
+      '就连这本日记，也会一直在这里等你，如果有一天你开始怀疑、害怕或者不安。我想让你记住，这本日记是献给一个女孩的：她很坚强、很勇敢、很聪明；她充满活力，很有趣；她心里装满了梦想、憧憬和希望；她心里满满都是爱；她很美，从可爱的脸庞一直美到灵魂的最深处；她毫无疑问会做成很了不起的事。而那个女孩——',
+      '^就是你。',
+      '谢谢你给我的这个十月。谢谢你信任我，让我爱你、宠你、出现在你的生活里。谢谢你可爱的照片，谢谢你的小脾气；谢谢你的时间，谢谢你的消息和语音；谢谢你爱我，谢谢你和我在一起。说了这么多，如果你愿意，我希望能像守护一朵珍贵的花一样守护你，直到我生命的尽头。那么，让我们一起创造一个充满感动和回忆的十一月吧。不要怀疑，我们会一起越来越好。',
+      '^我爱你。',
+      '^—— 十月 · 完 ——'
     ]}
   ];
 
+  // Día en que empezaron (año, mes-1, día)
+  var START = new Date(2026, 8, 4);
+
   var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  var NS = 'http://www.w3.org/2000/svg';
+
+  /* ---------------- días juntos ---------------- */
+  function daysTogether(){
+    var now = new Date();
+    var a = Date.UTC(START.getFullYear(), START.getMonth(), START.getDate());
+    var b = Date.UTC(now.getFullYear(), now.getMonth(), now.getDate());
+    return Math.floor((b - a) / 86400000) + 1;
+  }
+  var DAYS = daysTogether();
+  document.getElementById('days').innerHTML = '我们在一起的第 <b>' + DAYS + '</b> 天 🌸';
+  document.getElementById('coverDays').innerHTML = '我们在一起的第 <b style="color:#d9668e">' + DAYS + '</b> 天';
 
   /* ---------------- flor de cerezo (SVG) ---------------- */
   function blossom(x, y, r, rot, shade){
@@ -273,9 +414,7 @@
     }
     return g + '</g>';
   }
-  function bud(x, y, r){
-    return '<ellipse cx="'+x+'" cy="'+y+'" rx="'+r*0.7+'" ry="'+r+'" fill="#f39bb7" stroke="#e07d9f" stroke-width="0.6"/>';
-  }
+  function bud(x, y, r){ return '<ellipse cx="'+x+'" cy="'+y+'" rx="'+r*0.7+'" ry="'+r+'" fill="#f39bb7" stroke="#e07d9f" stroke-width="0.6"/>'; }
   function drawBranch(svg){
     var s = '<g class="sway">';
     s += '<path d="M -10 30 C 60 40, 120 70, 200 130 S 290 210, 330 255" stroke="#6b4a3f" stroke-width="8" fill="none" stroke-linecap="round"/>';
@@ -286,94 +425,250 @@
     var F = [[178,16,15,10],[150,24,13,40],[122,38,12,-20],[72,6,12,15],[45,34,11,60],[200,130,15,0],[222,148,13,30],[160,205,14,-15],[170,172,11,50],[255,190,13,20],[308,160,14,-10],[282,150,11,45],[330,255,15,5],[296,228,13,-30],[100,62,11,25],[20,30,10,0]];
     F.forEach(function(f, i){ s += blossom(f[0], f[1], f[2], f[3], i%3===0 ? '#fbd3df' : (i%3===1 ? '#f9c3d3' : '#fde0e8')); });
     [[190,6],[135,52],[60,52],[242,128],[148,190],[318,180],[268,212]].forEach(function(b){ s += bud(b[0], b[1], 5); });
-    s += '</g>';
-    svg.innerHTML = s;
+    svg.innerHTML = s + '</g>';
   }
   drawBranch(document.getElementById('branchL'));
   drawBranch(document.getElementById('branchR'));
-  document.getElementById('badge').innerHTML = blossom(0,0,26,15,'#fde3ea') ;
+  var FLOWER = '<svg viewBox="-20 -20 40 40" aria-hidden="true">' + blossom(0,0,13,10,'#f9c7d6') + '</svg>';
 
-  /* ---------------- construir el diario ---------------- */
-  var book = document.getElementById('book');
-  var smallFlower = '<svg viewBox="-20 -20 40 40" aria-hidden="true">' + blossom(0,0,13,10,'#f9c7d6') + '</svg>';
-  CHAPTERS.forEach(function(ch, i){
-    var sec = document.createElement('section');
-    sec.className = 'chapter';
-    var tape = document.createElement('div'); tape.className = 'tape'; tape.textContent = ch.t;
-    sec.appendChild(tape);
-    ch.p.forEach(function(t){ var p = document.createElement('p'); p.textContent = t; sec.appendChild(p); });
-    var corner = document.createElement('div'); corner.className = 'corner'; corner.innerHTML = smallFlower;
-    sec.appendChild(corner);
-    book.appendChild(sec);
-    if(i < CHAPTERS.length - 1){
-      var d = document.createElement('div'); d.className = 'divider'; d.innerHTML = smallFlower; book.appendChild(d);
+  /* ---------------- paginar el diario ---------------- */
+  var bookEl = document.getElementById('book');
+  var pages = [];
+  var chapterStart = [];   // página donde empieza cada capítulo
+  var tocLinks = [];
+  var tocFirst = 1;
+
+  function makePage(){
+    var pg = document.createElement('div');
+    pg.className = 'page measure';
+    var c = document.createElement('div'); c.className = 'content';
+    pg.appendChild(c);
+    bookEl.appendChild(pg);
+    pages.push(pg);
+    return c;
+  }
+  function overflows(c){ return c.scrollHeight > c.clientHeight + 1; }
+
+  function paginate(){
+    pages.forEach(function(p){ p.remove(); });
+    pages = []; chapterStart = []; tocLinks = [];
+
+    // 1) página de título
+    var c = makePage();
+    c.innerHTML = '<div class="titlePage">' + FLOWER.replace('<svg ','<svg ') +
+      '<h2>我的小日记</h2><div class="sub">写给你</div>' +
+      '<div class="small">我们在一起的第</div><div class="big">' + DAYS + '</div><div class="small">天</div>' +
+      '<div class="swipe">← 滑动翻页 →</div></div>';
+
+    // 2) índice (puede ocupar varias hojas)
+    tocFirst = pages.length;
+    c = makePage();
+    var toc = document.createElement('div'); toc.className = 'toc';
+    toc.innerHTML = '<h3>目录</h3><div class="tip">点一下，就能翻到那一页</div>';
+    var more = document.createElement('div'); more.className = 'more'; more.textContent = '下一页还有 ›';
+    toc.appendChild(more);
+    c.appendChild(toc);
+    CHAPTERS.forEach(function(ch, i){
+      var a = document.createElement('a');
+      a.innerHTML = '<span></span><span class="dots"></span><span class="n"></span><span class="go">›</span>';
+      a.firstChild.textContent = ch.t;
+      if(ch.nuevo){ var nw = document.createElement('span'); nw.className = 'new'; nw.textContent = '新'; a.insertBefore(nw, a.children[1]); }
+      a.addEventListener('click', function(e){ e.stopPropagation(); goTo(chapterStart[i]); });
+      toc.insertBefore(a, more); tocLinks.push(a);
+      if(overflows(c)){
+        a.remove();
+        c = makePage();
+        toc = document.createElement('div'); toc.className = 'toc';
+        toc.innerHTML = '<h3>目录 · 续</h3>';
+        more = document.createElement('div'); more.className = 'more'; more.textContent = '下一页还有 ›';
+        toc.appendChild(more);
+        c.appendChild(toc);
+        toc.insertBefore(a, more);
+      }
+    });
+    more.remove(); // la última hoja del índice no lleva aviso
+
+    // 3) capítulos
+    CHAPTERS.forEach(function(ch){
+      c = makePage();
+      chapterStart.push(pages.length - 1);
+      var tape = document.createElement('div'); tape.className = 'tape'; tape.textContent = ch.t;
+      c.appendChild(tape);
+      ch.p.forEach(function(text){
+        var em = text.charAt(0) === '^';
+        var rest = em ? text.slice(1) : text, cont = false;
+        while(rest.length){
+          var p = document.createElement('p');
+          if(cont) p.className = 'cont';
+          if(em) p.className = 'em';
+          p.textContent = rest;
+          c.appendChild(p);
+          if(!overflows(c)){ rest = ''; break; }
+          // no cabe completo: buscar cuántos caracteres caben
+          var lo = 0, hi = rest.length;
+          while(lo < hi){
+            var mid = Math.ceil((lo + hi) / 2);
+            p.textContent = rest.slice(0, mid);
+            if(overflows(c)) hi = mid - 1; else lo = mid;
+          }
+          if(lo < 6){ // casi nada cabe: pasar entero a la página siguiente
+            p.remove();
+            c = makePage();
+            continue;
+          }
+          p.textContent = rest.slice(0, lo);
+          rest = rest.slice(lo);
+          cont = true;
+          c = makePage();
+        }
+      });
+    });
+
+    // 4) final
+    c = makePage();
+    c.innerHTML = '<div class="endPage">' + FLOWER + '<h2>我爱你</h2><div class="sign">—— Carlos</div><button class="again" id="againBtn">从头再读一遍 ↺</button></div>';
+    c.querySelector('#againBtn').addEventListener('click', function(e){ e.stopPropagation(); goTo(0); });
+
+    // números de página, esquinas e índice
+    pages.forEach(function(pg, i){
+      pg.classList.remove('measure');
+      if(i > 0 && i < pages.length - 1){
+        var n = document.createElement('div'); n.className = 'num'; n.textContent = '— ' + i + ' —'; pg.appendChild(n);
+      }
+      var corner = document.createElement('div'); corner.className = 'corner'; corner.innerHTML = FLOWER; pg.appendChild(corner);
+    });
+    tocLinks.forEach(function(a, i){ a.querySelector('.n').textContent = chapterStart[i]; });
+  }
+
+  /* ---------------- pasar hojas ---------------- */
+  var idx = 0, busy = false, endCelebrated = false;
+  var KEY = 'riji_page_v1';
+  function savePos(){ try{ localStorage.setItem(KEY, String(idx)); }catch(e){} }
+  function loadPos(){ try{ var v = parseInt(localStorage.getItem(KEY), 10); return isNaN(v) ? 0 : v; }catch(e){ return 0; } }
+
+  function show(i){
+    pages.forEach(function(p){ p.classList.remove('cur','under','fwd','back'); });
+    idx = Math.max(0, Math.min(pages.length - 1, i));
+    pages[idx].classList.add('cur');
+    updateNav();
+  }
+  function updateNav(){
+    var pgEl = document.getElementById('pg');
+    if(idx === 0) pgEl.textContent = '封面';
+    else if(idx === pages.length - 1) pgEl.textContent = '♡';
+    else pgEl.textContent = idx + ' / ' + (pages.length - 2);
+    document.getElementById('prevBtn').disabled = idx === 0;
+    document.getElementById('nextBtn').disabled = idx === pages.length - 1;
+    savePos();
+    if(idx === pages.length - 1 && !endCelebrated){
+      endCelebrated = true;
+      setTimeout(function(){
+        var r = bookEl.getBoundingClientRect();
+        burst(r.left + r.width/2, r.top + r.height*0.42, 80, true);
+        for(var k=0;k<5;k++) flies.push(makeFly(r.left + r.width/2 + (Math.random()-0.5)*120, r.top + r.height*0.5, -Math.PI/2 + (Math.random()-0.5)));
+      }, 350);
+    }
+  }
+  function next(){
+    if(busy || idx >= pages.length - 1) return;
+    busy = true;
+    var cur = pages[idx], nx = pages[idx+1];
+    nx.classList.add('under');
+    cur.classList.add('fwd');
+    var r = bookEl.getBoundingClientRect();
+    burst(r.right - 20, r.top + r.height*0.5, 6, true);
+    setTimeout(function(){ busy = false; show(idx + 1); }, reduced ? 20 : 760);
+  }
+  function prev(){
+    if(busy || idx <= 0) return;
+    busy = true;
+    var target = pages[idx-1];
+    pages[idx].classList.add('under');
+    target.classList.add('cur','back');
+    setTimeout(function(){ busy = false; show(idx - 1); }, reduced ? 20 : 760);
+  }
+  function goTo(i){
+    if(busy || i == null || i === idx) return;
+    var target = pages[i];
+    busy = true;
+    if(i > idx){
+      target.classList.add('under');
+      pages[idx].classList.add('fwd');
+    } else {
+      pages[idx].classList.add('under');
+      target.classList.add('cur','back');
+    }
+    setTimeout(function(){ busy = false; show(i); }, reduced ? 20 : 760);
+  }
+
+  document.getElementById('nextBtn').addEventListener('click', function(e){ e.stopPropagation(); next(); });
+  document.getElementById('tocBtn').addEventListener('click', function(e){ e.stopPropagation(); goTo(tocFirst); });
+  document.getElementById('prevBtn').addEventListener('click', function(e){ e.stopPropagation(); prev(); });
+  // tocar la hoja: lado derecho = siguiente, lado izquierdo = anterior
+  bookEl.addEventListener('click', function(e){
+    var r = bookEl.getBoundingClientRect();
+    if(e.clientX - r.left > r.width * 0.4) next(); else prev();
+  });
+  // deslizar
+  var tx = null, ty = null;
+  bookEl.addEventListener('touchstart', function(e){ tx = e.touches[0].clientX; ty = e.touches[0].clientY; }, { passive:true });
+  bookEl.addEventListener('touchend', function(e){
+    if(tx === null) return;
+    var dx = e.changedTouches[0].clientX - tx, dy = e.changedTouches[0].clientY - ty;
+    tx = null;
+    if(Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy)){
+      e.preventDefault();
+      if(dx < 0) next(); else prev();
     }
   });
-  var ending = document.createElement('div');
-  ending.className = 'ending';
-  ending.innerHTML = '<h2>我爱你</h2><div class="sign">—— Carlos</div><div class="hint">轻触屏幕，会有花瓣和蝴蝶 🌸</div>';
-  book.appendChild(ending);
+  document.addEventListener('keydown', function(e){
+    if(!opened) return;
+    if(e.key === 'ArrowRight') next();
+    if(e.key === 'ArrowLeft') prev();
+  });
+
+  // rehacer páginas si cambia el tamaño (girar el celular)
+  var rt = null;
+  window.addEventListener('resize', function(){
+    clearTimeout(rt);
+    rt = setTimeout(function(){
+      if(!opened) return;
+      var ch = 0;
+      for(var k=0;k<chapterStart.length;k++) if(chapterStart[k] <= idx) ch = k;
+      var atStart = idx < 2 ? idx : null, atEnd = idx === pages.length - 1;
+      paginate();
+      show(atEnd ? pages.length - 1 : (atStart !== null ? atStart : chapterStart[ch]));
+    }, 300);
+  });
 
   /* ---------------- abrir ---------------- */
   var cover = document.getElementById('cover'), wrap = document.getElementById('coverWrap');
+  var stage = document.getElementById('stage');
   var opened = false;
+  var saved = loadPos();
+  if(saved > 1) document.getElementById('tapHint').textContent = '轻触，继续阅读';
   cover.addEventListener('click', function(){
     if(opened) return; opened = true;
     cover.classList.add('open'); wrap.classList.add('gone');
     var r = cover.getBoundingClientRect();
-    burst(r.left + r.width/2, r.top + r.height/2, 40);
-    setTimeout(function(){
-      document.body.classList.remove('locked');
-      book.classList.add('show');
-      observe();
-      for(var i=0;i<3;i++) flies.push(makeFly(W*Math.random(), H*(0.3+Math.random()*0.5)));
-    }, reduced ? 0 : 1100);
+    burst(r.left + r.width/2, r.top + r.height/2, 40, true);
+    stage.classList.add('show');
+    paginate();
+    show(Math.min(saved, pages.length - 1));
+    if(idx === pages.length - 1) endCelebrated = false;
+    for(var i=0;i<3;i++) flies.push(makeFly(W*Math.random(), H*(0.3+Math.random()*0.5)));
   });
 
-  var endingShown = false;
-  function observe(){
-    var els = document.querySelectorAll('.chapter, .ending');
-    if(!('IntersectionObserver' in window)){ els.forEach(function(e){ e.classList.add('in'); }); return; }
-    var io = new IntersectionObserver(function(list){
-      list.forEach(function(it){
-        if(!it.isIntersecting) return;
-        it.target.classList.add('in'); io.unobserve(it.target);
-        if(it.target === ending && !endingShown){
-          endingShown = true;
-          setTimeout(function(){
-            var r = ending.getBoundingClientRect();
-            burst(r.left + r.width/2, r.top + 40, 70);
-            for(var k=0;k<5;k++) flies.push(makeFly(r.left + r.width/2 + (Math.random()-0.5)*120, r.top + 60, -Math.PI/2 + (Math.random()-0.5)));
-          }, 500);
-        }
-      });
-    }, { threshold:0.06, rootMargin:'0px 0px -6% 0px' });
-    els.forEach(function(e){ io.observe(e); });
-  }
-
-  // barra de progreso
-  var bar = document.getElementById('progress');
-  window.addEventListener('scroll', function(){
-    var max = document.documentElement.scrollHeight - window.innerHeight;
-    bar.style.width = (max > 0 ? Math.min(100, window.scrollY / max * 100) : 0) + '%';
-  }, { passive:true });
-
-  // tocar: pétalos (+ a veces una mariposa)
-  document.addEventListener('click', function(e){
-    if(!opened) return;
-    burst(e.clientX, e.clientY, 16);
-    if(Math.random() < 0.5 && flies.length < 14) flies.push(makeFly(e.clientX, e.clientY));
-  });
-
-  /* ---------------- pétalos (canvas) ---------------- */
+  /* ---------------- pétalos y mariposas ---------------- */
   var pc = document.getElementById('petals'), px = pc.getContext('2d');
+  var tc = document.getElementById('petalsTop'), tx2 = tc.getContext('2d');
   var fc = document.getElementById('flies'), fx = fc.getContext('2d');
   var W, H, DPR;
   function resize(){
     DPR = Math.min(window.devicePixelRatio || 1, 2);
     W = window.innerWidth; H = window.innerHeight;
-    [pc, fc].forEach(function(c){ c.width = W*DPR; c.height = H*DPR; });
-    px.setTransform(DPR,0,0,DPR,0,0); fx.setTransform(DPR,0,0,DPR,0,0);
+    [pc, tc, fc].forEach(function(cv){ cv.width = W*DPR; cv.height = H*DPR; });
+    [px, tx2, fx].forEach(function(cx){ cx.setTransform(DPR,0,0,DPR,0,0); });
   }
   resize(); window.addEventListener('resize', resize);
 
@@ -381,51 +676,57 @@
   function makePetal(x, y, burstMode){
     var a = Math.random()*6.28, v = burstMode ? 1 + Math.random()*3 : 0;
     return {
-      x: x != null ? x : Math.random()*W,
-      y: y != null ? y : -20 - Math.random()*H,
+      x: x != null ? x : Math.random()*W, y: y != null ? y : -20 - Math.random()*H,
       s: 5 + Math.random()*6,
       vx: burstMode ? Math.cos(a)*v : 0.2 + Math.random()*0.5,
       vy: burstMode ? Math.sin(a)*v - 1 : 0.5 + Math.random()*0.7,
       rot: Math.random()*6.28, vr: (Math.random()-0.5)*0.04,
-      flip: Math.random()*6.28, vf: 0.03 + Math.random()*0.04,
-      sway: Math.random()*6.28,
+      flip: Math.random()*6.28, vf: 0.03 + Math.random()*0.04, sway: Math.random()*6.28,
       c: PETAL_COLORS[Math.floor(Math.random()*PETAL_COLORS.length)],
       life: 0, max: burstMode ? 160 + Math.random()*80 : Infinity
     };
   }
-  var petals = [];
-  var NP = Math.round(Math.min(46, Math.max(24, W*H/16000)));
-  for(var i=0;i<NP;i++){ var p = makePetal(); p.y = Math.random()*H; petals.push(p); }
-  function burst(x, y, n){ if(reduced) return; for(var i=0;i<n;i++) petals.push(makePetal(x, y, true)); }
+  var petals = [], topPetals = [];
+  var NP = Math.round(Math.min(40, Math.max(22, W*H/18000)));
+  for(var i=0;i<NP;i++){ var p0 = makePetal(); p0.y = Math.random()*H; petals.push(p0); }
+  function burst(x, y, n, onTop){ if(reduced) return; var arr = onTop ? topPetals : petals; for(var i=0;i<n;i++) arr.push(makePetal(x, y, true)); }
 
-  function drawPetal(p, alpha){
+  function drawPetal(cx, p, alpha){
     var s = p.s;
-    px.save();
-    px.translate(p.x, p.y);
-    px.rotate(p.rot);
-    px.scale(1, Math.max(0.15, Math.abs(Math.cos(p.flip))));
-    px.globalAlpha = alpha;
-    px.beginPath();
-    px.moveTo(0, -s*0.75);
-    px.quadraticCurveTo(s*0.15, -s*1.05, s*0.38, -s*0.95);
-    px.bezierCurveTo(s*0.95, -s*0.5, s*0.6, s*0.7, 0, s);
-    px.bezierCurveTo(-s*0.6, s*0.7, -s*0.95, -s*0.5, -s*0.38, -s*0.95);
-    px.quadraticCurveTo(-s*0.15, -s*1.05, 0, -s*0.75);
-    px.fillStyle = p.c; px.fill();
-    px.globalAlpha = alpha*0.5;
-    px.beginPath(); px.moveTo(0, s*0.8); px.lineTo(0, -s*0.3);
-    px.strokeStyle = '#ffffff'; px.lineWidth = 0.8; px.stroke();
-    px.restore();
+    cx.save(); cx.translate(p.x, p.y); cx.rotate(p.rot);
+    cx.scale(1, Math.max(0.15, Math.abs(Math.cos(p.flip))));
+    cx.globalAlpha = alpha;
+    cx.beginPath();
+    cx.moveTo(0, -s*0.75);
+    cx.quadraticCurveTo(s*0.15, -s*1.05, s*0.38, -s*0.95);
+    cx.bezierCurveTo(s*0.95, -s*0.5, s*0.6, s*0.7, 0, s);
+    cx.bezierCurveTo(-s*0.6, s*0.7, -s*0.95, -s*0.5, -s*0.38, -s*0.95);
+    cx.quadraticCurveTo(-s*0.15, -s*1.05, 0, -s*0.75);
+    cx.fillStyle = p.c; cx.fill();
+    cx.restore();
+  }
+  function stepPetals(cx, arr, dt){
+    for(var i=arr.length-1;i>=0;i--){
+      var p = arr[i]; p.life += dt;
+      if(p.max !== Infinity){
+        p.vx *= 0.985; p.vy = p.vy*0.985 + 0.03*dt;
+        if(p.life > p.max){ arr.splice(i,1); continue; }
+      }
+      p.sway += 0.02*dt;
+      p.x += (p.vx + Math.sin(p.sway)*0.4)*dt; p.y += p.vy*dt;
+      p.rot += p.vr*dt; p.flip += p.vf*dt;
+      if(p.max === Infinity && (p.y > H + 20 || p.x > W + 30)){ p.y = -20; p.x = Math.random()*W*1.1 - W*0.1; }
+      drawPetal(cx, p, p.max === Infinity ? 0.85 : Math.min(1, 1 - p.life/p.max + 0.2));
+    }
   }
 
-  /* ---------------- mariposas ---------------- */
   var FLY_PAL = [['#ffd6e6','#f48fb1'],['#e6dcff','#b59cf2'],['#d6f0ff','#8ccaf2'],['#fff0c9','#f6c26b']];
   var flies = [];
   function makeFly(x, y, a){
     var pal = FLY_PAL[Math.floor(Math.random()*FLY_PAL.length)];
     return { x:x, y:y, a: a != null ? a : Math.random()*6.28, sp:0.6 + Math.random()*0.5, turn:0,
              size:9 + Math.random()*8, ph:Math.random()*6.28, flap:0.16 + Math.random()*0.06,
-             pal:pal, life:0, max: 900 + Math.random()*600 };
+             pal:pal, life:0, max:900 + Math.random()*600 };
   }
   function drawFly(f, alpha){
     var s = f.size, flap = Math.abs(Math.cos(f.ph))*0.82 + 0.18;
@@ -453,48 +754,25 @@
     fx.restore();
   }
 
-  /* ---------------- bucle ---------------- */
   var last = 0;
   function frame(now){
     var dt = last ? Math.min(3, (now-last)/16.67) : 1; last = now;
-    px.clearRect(0,0,W,H); fx.clearRect(0,0,W,H);
-
-    for(var i=petals.length-1;i>=0;i--){
-      var p = petals[i];
-      p.life += dt;
-      if(p.max !== Infinity){
-        p.vx *= 0.985; p.vy = p.vy*0.985 + 0.03*dt;
-        if(p.life > p.max){ petals.splice(i,1); continue; }
-      }
-      p.sway += 0.02*dt;
-      p.x += (p.vx + Math.sin(p.sway)*0.4)*dt;
-      p.y += p.vy*dt;
-      p.rot += p.vr*dt; p.flip += p.vf*dt;
-      if(p.max === Infinity && (p.y > H + 20 || p.x > W + 30)){
-        p.y = -20; p.x = Math.random()*W*1.1 - W*0.1;
-      }
-      var a = p.max === Infinity ? 0.85 : Math.min(1, 1 - p.life/p.max + 0.2);
-      drawPetal(p, a);
-    }
-
+    px.clearRect(0,0,W,H); tx2.clearRect(0,0,W,H); fx.clearRect(0,0,W,H);
+    stepPetals(px, petals, dt);
+    stepPetals(tx2, topPetals, dt);
     for(var f=flies.length-1; f>=0; f--){
-      var b = flies[f];
-      b.life += dt;
+      var b = flies[f]; b.life += dt;
       if(b.life > b.max){ flies.splice(f,1); continue; }
       b.turn += (Math.random()-0.5)*0.012*dt;
       b.turn = Math.max(-0.035, Math.min(0.035, b.turn));
       b.a += b.turn*dt;
-      b.x += Math.cos(b.a)*b.sp*dt; b.y += Math.sin(b.a)*b.sp*dt;
-      b.ph += b.flap*dt;
+      b.x += Math.cos(b.a)*b.sp*dt; b.y += Math.sin(b.a)*b.sp*dt; b.ph += b.flap*dt;
       var M = 40;
       if(b.x < -M) b.x = W+M; if(b.x > W+M) b.x = -M;
       if(b.y < -M) b.y = H+M; if(b.y > H+M) b.y = -M;
-      var fade = Math.min(1, b.life/40) * Math.min(1, (b.max - b.life)/80);
-      drawFly(b, fade*0.9);
+      drawFly(b, Math.min(1, b.life/40) * Math.min(1, (b.max - b.life)/80) * 0.9);
     }
-    // siempre hay un par de mariposas paseando
     if(opened && flies.length < 3 && Math.random() < 0.01) flies.push(makeFly(-30, H*(0.2+Math.random()*0.6), (Math.random()-0.5)*0.6));
-
     requestAnimationFrame(frame);
   }
   if(!reduced) requestAnimationFrame(frame);
